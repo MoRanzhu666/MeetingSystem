@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监狱会见系统 - 首页</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
+        body { background-color: #f5f7fa; color: #333; line-height: 1.6; }
+
+        /* 头部导航 */
+        header { background-color: #2c3e50; color: #fff; padding: 1rem 0; }
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        nav a { color: #fff; text-decoration: none; margin-left: 1.5rem; transition: color 0.3s; }
+        nav a:hover { color: #3498db; }
+
+        /* 横幅区域 */
+        .banner { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; padding: 4rem 0; text-align: center; }
+        .banner h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .banner p { font-size: 1.2rem; max-width: 800px; margin: 0 auto; }
+
+        /* 功能特点 */
+        .features { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; display: flex; flex-wrap: wrap; gap: 2rem; }
+        .feature-card { flex: 1 1 300px; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .feature-card h3 { color: #2c3e50; margin-bottom: 1rem; font-size: 1.3rem; }
+        .feature-card p { color: #666; }
+
+        /* 会见须知 */
+        .notice { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; }
+        .notice-card { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid #e74c3c; }
+        .notice-card h3 { color: #e74c3c; margin-bottom: 1rem; font-size: 1.3rem; }
+        .notice-card ul { padding-left: 1.5rem; color: #666; }
+        .notice-card li { margin: 0.5rem 0; }
+
+        /* 底部 */
+        footer { background-color: #2c3e50; color: #fff; text-align: center; padding: 1.5rem 0; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+<!-- 头部导航 -->
+<header>
+    <div class="header-container">
+        <div class="logo">监狱会见系统</div>
+        <nav>
+            <a th:href="@{/}">首页</a>
+            <a th:href="@{/register}">预约会见</a>
+            <a th:href="@{/query}">预约查询</a>
+            <a th:href="@{/admin/login}">管理入口</a>
+        </nav>
+    </div>
+</header>
+
+<!-- 横幅区域 -->
+<section class="banner">
+    <h2>便捷会见，温暖沟通</h2>
+    <p>为服刑人员与家属提供安全、规范、高效的会见预约服务，简化流程，减少等待</p>
+</section>
+
+<!-- 功能特点 -->
+<section class="features">
+    <div class="feature-card">
+        <h3>在线预约</h3>
+        <p>支持7×24小时在线预约，无需现场排队，随时随地提交会见申请，选择心仪时段</p>
+    </div>
+    <div class="feature-card">
+        <h3>实时查询</h3>
+        <p>输入会见人身份证号或服刑人员编号，即可查询预约状态、审核结果及会见安排</p>
+    </div>
+    <div class="feature-card">
+        <h3>规范管理</h3>
+        <p>管理员后台实时审核预约，严格把控会见流程，确保会见过程安全、有序、合规</p>
+    </div>
+</section>
+
+<!-- 会见须知 -->
+<section class="notice">
+    <div class="notice-card">
+        <h3>会见须知</h3>
+        <ul>
+            <li>请提前1-3天提交预约申请，逾期将无法受理</li>
+            <li>会见时需携带本人有效身份证件（身份证、户口本等），无证者不得会见</li>
+            <li>每次会见人数不超过3人，会见时长不超过30分钟</li>
+            <li>禁止携带食品、药品、电子产品等违禁物品进入会见区域</li>
+            <li>若需取消预约，请提前24小时在"预约查询"页面操作，无故缺席将影响后续预约</li>
+        </ul>
+    </div>
+</section>
+
+<!-- 底部 -->
+<footer>
+    <p>© 2024 监狱会见系统 版权所有 | 技术支持：XX信息技术有限公司</p>
+</footer>
+</body>
+</html>
