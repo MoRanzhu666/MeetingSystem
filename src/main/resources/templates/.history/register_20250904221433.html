@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监狱会见系统 - 预约登记</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
+        body { background-color: #f5f7fa; color: #333; line-height: 1.6; }
+        
+        /* 头部导航 */
+        header { background-color: #2c3e50; color: #fff; padding: 1rem 0; }
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        nav a { color: #fff; text-decoration: none; margin-left: 1.5rem; transition: color 0.3s; }
+        nav a:hover { color: #3498db; }
+        
+        /* 表单容器 */
+        .form-container { max-width: 800px; margin: 3rem auto; padding: 0 1rem; }
+        .form-card { background: #fff; padding: 2.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .form-card h2 { color: #2c3e50; text-align: center; margin-bottom: 2rem; font-size: 1.8rem; }
+        
+        /* 表单样式 */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #444; }
+        .form-group input, 
+        .form-group select { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; transition: border 0.3s; }
+        .form-group input:focus, 
+        .form-group select:focus { outline: none; border-color: #3498db; }
+        
+        /* 错误提示 */
+        .error-msg { color: #e74c3c; font-size: 0.9rem; margin-top: 0.3rem; }
+        .global-error { background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; text-align: center; }
+        .global-success { background-color: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; text-align: center; }
+        
+        /* 提交按钮 */
+        .submit-btn { width: 100%; padding: 1rem; background-color: #3498db; color: #fff; border: none; border-radius: 4px; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; }
+        .submit-btn:hover { background-color: #2980b9; }
+        
+        /* 底部 */
+        footer { background-color: #2c3e50; color: #fff; text-align: center; padding: 1.5rem 0; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="header-container">
+            <div class="logo">监狱会见系统</div>
+            <nav>
+                <a th:href="@{/}">首页</a>
+                <a th:href="@{/register}">预约会见</a>
+                <a th:href="@{/query}">预约查询</a>
+                <a th:href="@{/admin/login}">管理入口</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 表单容器 -->
+    <section class="form-container">
+        <div class="form-card">
+            <h2>会见预约登记</h2>
+            
+            <!-- 全局提示（成功/失败） -->
+            <div th:if="${not #strings.isEmpty(globalMsg)}" 
+                 th:class="${isSuccess ? 'global-success' : 'global-error'}"
+                 th:text="${globalMsg}"></div>
+            
+            <!-- 预约表单 -->
+            <form th:action="@{/appointments/register}" method="post" th:object="${registerVO}">
+                <!-- 服刑人员信息 -->
+                <div class="form-group">
+                    <label for="prisonerId">服刑人员编号 <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="prisonerId" th:field="*{prisonerId}" required>
+                    <p class="error-msg" th:if="${#fields.hasErrors('prisonerId')}" th:errors="*{prisonerId}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="prisonerName">服刑人员姓名 <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="prisonerName" th:field="*{prisonerName}" required>
+                    <p class="error-msg" th:if="${#fields.hasErrors('prisonerName')}" th:errors="*{prisonerName}"></p>
+                </div>
+
+                <!-- 会见人信息 -->
+                <div class="form-group">
+                    <label for="visitorName">会见人姓名 <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="visitorName" th:field="*{visitorName}" required>
+                    <p class="error-msg" th:if="${#fields.hasErrors('visitorName')}" th:errors="*{visitorName}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="visitorId">会见人身份证号 <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="visitorId" th:field="*{visitorId}" required>
+                    <p class="error-msg" th:if="${#fields.hasErrors('visitorId')}" th:errors="*{visitorId}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="relation">与服刑人员关系 <span style="color: #e74c3c;">*</span></label>
+                    <select id="relation" th:field="*{relation}" required>
+                        <option value="">请选择</option>
+                        <option value="配偶">配偶</option>
+                        <option value="父母">父母</option>
+                        <option value="子女">子女</option>
+                        <option value="兄弟姐妹">兄弟姐妹</option>
+                        <option value="其他亲属">其他亲属</option>
+                        <option value="朋友">朋友</option>
+                    </select>
+                    <p class="error-msg" th:if="${#fields.hasErrors('relation')}" th:errors="*{relation}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="phone">联系电话 <span style="color: #e74c3c;">*</span></label>
+                    <input type="tel" id="phone" th:field="*{phone}" required>
+                    <p class="error-msg" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+                </div>
+
+                <!-- 预约信息 -->
+                <div class="form-group">
+                    <label for="appointmentDate">预约日期 <span style="color: #e74c3c;">*</span></label>
+                    <select id="appointmentDate" th:field="*{appointmentDate}" required>
+                        <option value="">请选择</option>
+                        <option th:each="date : ${dates}" th:value="${date}" th:text="${date}"></option>
+                    </select>
+                    <p class="error-msg" th:if="${#fields.hasErrors('appointmentDate')}" th:errors="*{appointmentDate}"></p>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentTime">预约时段 <span style="color: #e74c3c;">*</span></label>
+                    <select id="appointmentTime" th:field="*{appointmentTime}" required>
+                        <option value="">请选择</option>
+                        <option th:each="time : ${times}" th:value="${time}" th:text="${time}"></option>
+                    </select>
+                    <p class="error-msg" th:if="${#fields.hasErrors('appointmentTime')}" th:errors="*{appointmentTime}"></p>
+                </div>
+
+                <!-- 提交按钮 -->
+                <button type="submit" class="submit-btn">提交预约</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer>
+        <p>© 2024 监狱会见系统 版权所有 | 技术支持：XX信息技术有限公司</p>
+    </footer>
+</body>
+</html>

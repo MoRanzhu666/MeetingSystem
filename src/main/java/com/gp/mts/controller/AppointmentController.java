@@ -4,6 +4,7 @@ import com.gp.mts.bean.Appointment;
 import com.gp.mts.service.AppointmentService;
 import com.gp.mts.service.impl.AdminServiceImpl;
 import com.gp.mts.service.impl.AppointmentServiceImpl;
+import com.gp.mts.utils.GenerateModelVOUtils;
 import com.gp.mts.vo.AppointmentQueryVO;
 import com.gp.mts.vo.AppointmentRegisterVO;
 import jakarta.validation.Valid;
@@ -35,11 +36,12 @@ public class AppointmentController {
      */
     @PostMapping("/register")
     public String handleRegister(
-            @Valid @RequestBody(required = false) AppointmentRegisterVO registerVO,
+            // @Valid @RequestBody(required = false) AppointmentRegisterVO registerVO,
+            AppointmentRegisterVO registerVO,
             BindingResult bindingResult,
             Model model) {
 
-        System.out.println("register");
+        System.out.println("register"+bindingResult.hasErrors());
         // 表单验证失败，返回原页面并显示错误
         if (bindingResult.hasErrors()) {
             model.addAttribute("errorMsg", "表单填写有误，请检查后重试");
@@ -54,10 +56,11 @@ public class AppointmentController {
             // 预约成功，携带结果跳转到成功页
             model.addAttribute("message", result.get("message"));
             model.addAttribute("appointmentId", result.get("appointmentId"));
-            return "register-success"; // 预约成功页
+            return "query"; // 预约成功页
         } else {
             // 预约失败，返回原页面显示错误
-            model.addAttribute("errorMsg", result.get("message"));
+            GenerateModelVOUtils.generateAppointmentRegisterVO(model);
+            GenerateModelVOUtils.generateErrorMsg(model, result.get("message"));
             return "register";
         }
     }
@@ -67,10 +70,12 @@ public class AppointmentController {
      */
     @PostMapping("/query")
     public String handleQuery(
-            @RequestBody(required = false) AppointmentQueryVO queryVO,
+            // @RequestBody(required = false) AppointmentQueryVO queryVO,
+            AppointmentQueryVO queryVO,
             Model model) {
         // 调用服务层查询
         Map<String, Object> result = appointmentServiceImpl.query(queryVO);
+        System.out.println("result"+result);
         // 绑定查询条件回显（方便用户修改）
         model.addAttribute("queryVO", queryVO);
 

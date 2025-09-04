@@ -2,299 +2,428 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>监狱会见系统 - 管理员登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监狱会见系统 - 管理员中心</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft YaHei", "Arial", sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-        }
-
-        /* 登录容器 */
-        .login-container {
-            width: 100%;
-            max-width: 420px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-        }
-
-        /* 登录头部 */
-        .login-header {
-            background-color: #2c3e50;
-            color: #fff;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .login-header .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .login-header .logo i {
-            font-size: 1.8rem;
-        }
-
-        .login-header h2 {
-            font-size: 1.4rem;
-            font-weight: 500;
-        }
-
-        /* 登录表单区域 */
-        .login-form-wrap {
-            padding: 2rem;
-        }
-
-        /* 表单组样式 */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            color: #444;
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-control {
-            position: relative;
-        }
-
-        .form-control input {
-            width: 100%;
-            padding: 1rem 1rem 1rem 2.8rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-control input:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
-        }
-
-        .form-control i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #888;
-            font-size: 1.1rem;
-        }
-
-        /* 错误提示 */
-        .error-msg {
-            color: #e74c3c;
-            font-size: 0.85rem;
-            margin-top: 0.4rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .global-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 0.8rem 1rem;
-            border-radius: 6px;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* 登录按钮 */
-        .login-btn {
-            width: 100%;
-            padding: 1rem;
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .login-btn:hover {
-            background-color: #2980b9;
-        }
-
-        .login-btn i {
-            font-size: 1.1rem;
-        }
-
-        /* 底部链接 */
-        .login-footer {
-            margin-top: 1.5rem;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .login-footer a {
-            color: #3498db;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .login-footer a:hover {
-            color: #2980b9;
-            text-decoration: underline;
-        }
-
-        /* 加载状态 */
-        .login-btn.loading {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
-        .login-btn.loading i {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Microsoft YaHei", sans-serif; }
+        body { background-color: #f5f7fa; color: #333; line-height: 1.6; display: flex; min-height: 100vh; }
+        
+        /* 侧边栏 */
+        .sidebar { width: 220px; background-color: #2c3e50; color: #fff; padding: 1.5rem 0; flex-shrink: 0; }
+        .sidebar-logo { text-align: center; padding: 0 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 1.5rem; }
+        .sidebar-logo h2 { font-size: 1.2rem; }
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li { margin-bottom: 0.3rem; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 0.8rem; color: #ddd; text-decoration: none; padding: 0.8rem 1.5rem; transition: all 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: #3498db; color: #fff; }
+        .sidebar-menu i { width: 20px; text-align: center; }
+        
+        /* 主内容区 */
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        
+        /* 顶部导航 */
+        .top-nav { background-color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .search-bar { display: flex; align-items: center; gap: 0.5rem; background-color: #f5f7fa; padding: 0.5rem 1rem; border-radius: 4px; width: 300px; }
+        .search-bar input { border: none; background: transparent; outline: none; width: 100%; }
+        .user-menu { display: flex; align-items: center; gap: 1.5rem; }
+        .user-menu .icon-btn { background: none; border: none; font-size: 1.2rem; color: #666; cursor: pointer; transition: color 0.3s; }
+        .user-menu .icon-btn:hover { color: #3498db; }
+        .user-info { display: flex; align-items: center; gap: 0.8rem; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #3498db; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        /* 页面内容 */
+        .page-content { padding: 2rem; overflow-y: auto; flex-grow: 1; }
+        .page-header { margin-bottom: 1.5rem; }
+        .page-title { font-size: 1.8rem; color: #2c3e50; margin-bottom: 0.5rem; }
+        .page-description { color: #666; }
+        
+        /* 统计卡片 */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background-color: #fff; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 1rem; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fff; }
+        .stat-icon.total { background-color: #3498db; }
+        .stat-icon.pending { background-color: #ffc107; }
+        .stat-icon.approved { background-color: #28a745; }
+        .stat-icon.rejected { background-color: #dc3545; }
+        .stat-info h3 { font-size: 0.9rem; color: #666; margin-bottom: 0.3rem; }
+        .stat-info .stat-value { font-size: 1.8rem; font-weight: bold; color: #2c3e50; }
+        
+        /* 筛选和操作栏 */
+        .filter-bar { background-color: #fff; border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .filter-group { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+        .filter-item { display: flex; align-items: center; gap: 0.5rem; }
+        .filter-item label { color: #666; font-size: 0.9rem; }
+        .filter-item select, .filter-item input { padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem; }
+        .action-buttons { display: flex; gap: 0.8rem; }
+        .btn { padding: 0.5rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; transition: background 0.3s; }
+        .btn-primary { background-color: #3498db; color: #fff; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-danger { background-color: #dc3545; color: #fff; }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-outline { background-color: transparent; border: 1px solid #ddd; color: #666; }
+        .btn-outline:hover { background-color: #f5f7fa; }
+        
+        /* 表格容器 */
+        .table-container { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+        .data-table th { background-color: #f8f9fa; color: #495057; font-weight: 500; white-space: nowrap; }
+        .data-table tr:hover { background-color: #f8f9fa; }
+        .data-table .checkbox-cell { width: 50px; }
+        .data-table .action-cell { white-space: nowrap; }
+        
+        /* 状态标签 */
+        .status-tag { display: inline-block; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; color: #fff; }
+        .status-pending { background-color: #ffc107; }
+        .status-approved { background-color: #28a745; }
+        .status-rejected { background-color: #dc3545; }
+        .status-completed { background-color: #17a2b8; }
+        .status-canceled { background-color: #6c757d; }
+        
+        /* 操作按钮 */
+        .action-btn { padding: 0.3rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: background 0.3s; margin-right: 0.3rem; }
+        .view-btn { background-color: #f8f9fa; color: #666; }
+        .view-btn:hover { background-color: #e9ecef; }
+        .approve-btn { background-color: #28a745; color: #fff; }
+        .approve-btn:hover { background-color: #218838; }
+        .reject-btn { background-color: #dc3545; color: #fff; }
+        .reject-btn:hover { background-color: #c82333; }
+        .complete-btn { background-color: #17a2b8; color: #fff; }
+        .complete-btn:hover { background-color: #138496; }
+        
+        /* 分页 */
+        .pagination { display: flex; justify-content: center; padding: 1.5rem; gap: 0.5rem; }
+        .pagination-btn { width: 36px; height: 36px; border-radius: 4px; border: 1px solid #ddd; background-color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
+        .pagination-btn:hover, .pagination-btn.active { background-color: #3498db; color: #fff; border-color: #3498db; }
+        
+        /* 无数据状态 */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: #6c757d; }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+        
         /* 响应式调整 */
-        @media (max-width: 480px) {
-            .login-form-wrap {
-                padding: 1.5rem;
-            }
-
-            .login-header h2 {
-                font-size: 1.25rem;
-            }
-
-            .form-group {
-                margin-bottom: 1.2rem;
-            }
-
-            .login-btn {
-                padding: 0.9rem;
-                font-size: 0.95rem;
-            }
+        @media (max-width: 992px) {
+            .sidebar { width: 60px; padding: 1.5rem 0; }
+            .sidebar-logo h2, .sidebar-menu span { display: none; }
+            .sidebar-menu a { justify-content: center; padding: 0.8rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .search-bar { width: 100%; }
+            .user-info span { display: none; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .action-buttons { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <!-- 登录头部 -->
-        <div class="login-header">
-            <div class="logo">
-                <i class="fas fa-shield-alt"></i>
-                <h2>监狱会见系统</h2>
-            </div>
-            <p>管理员登录入口</p>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>会见管理系统</h2>
         </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> <span>数据概览</span></a></li>
+            <li><a href="#"><i class="fas fa-calendar-check"></i> <span>预约管理</span></a></li>
+            <li><a href="#"><i class="fas fa-user-friends"></i> <span>服刑人员管理</span></a></li>
+            <li><a href="#"><i class="fas fa-users"></i> <span>会见人管理</span></a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> <span>系统设置</span></a></li>
+            <li><a href="#"><i class="fas fa-question-circle"></i> <span>帮助中心</span></a></li>
+        </ul>
+    </aside>
 
-        <!-- 登录表单 -->
-        <div class="login-form-wrap">
-            <!-- 全局错误提示（如用户名密码错误） -->
-            <div th:if="${not #strings.isEmpty(errorMsg)}" class="global-error">
-                <i class="fas fa-exclamation-circle"></i>
-                <span th:text="${errorMsg}">用户名或密码错误，请重新输入</span>
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 顶部导航 -->
+        <nav class="top-nav">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="搜索预约ID、姓名、身份证号...">
+            </div>
+            <div class="user-menu">
+                <button class="icon-btn" title="消息通知"><i class="fas fa-bell"></i></button>
+                <button class="icon-btn" title="系统通知"><i class="fas fa-envelope"></i></button>
+                <div class="user-info">
+                    <div class="user-avatar" th:text="${#strings.substring(session.admin, 0, 1)}"></div>
+                    <span th:text="${session.admin}"></span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 页面内容 -->
+        <div class="page-content">
+            <div class="page-header">
+                <h1 class="page-title">预约管理</h1>
+                <p class="page-description">管理所有会见预约申请，进行审核和状态跟踪</p>
             </div>
 
-            <!-- 登录表单 -->
-            <form th:action="@{/admin/login}" method="post" th:object="${loginVO}" id="adminLoginForm">
-                <!-- 用户名输入框 -->
-                <div class="form-group">
-                    <label for="username">管理员用户名 <span style="color: #e74c3c;">*</span></label>
-                    <div class="form-control">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="username" th:field="*{username}" placeholder="请输入管理员用户名" required>
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon total">
+                        <i class="fas fa-clipboard-list"></i>
                     </div>
-                    <p class="error-msg" th:if="${#fields.hasErrors('username')}">
-                        <i class="fas fa-times-circle"></i>
-                        <span th:errors="*{username}">用户名不能为空</span>
-                    </p>
-                </div>
-
-                <!-- 密码输入框 -->
-                <div class="form-group">
-                    <label for="password">管理员密码 <span style="color: #e74c3c;">*</span></label>
-                    <div class="form-control">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" th:field="*{password}" placeholder="请输入管理员密码" required>
+                    <div class="stat-info">
+                        <h3>总预约数</h3>
+                        <div class="stat-value" th:text="${stats.total}">128</div>
                     </div>
-                    <p class="error-msg" th:if="${#fields.hasErrors('password')}">
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>待审核</h3>
+                        <div class="stat-value" th:text="${stats.pending}">24</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon approved">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>已批准</h3>
+                        <div class="stat-value" th:text="${stats.approved}">86</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon rejected">
                         <i class="fas fa-times-circle"></i>
-                        <span th:errors="*{password}">密码不能为空</span>
-                    </p>
+                    </div>
+                    <div class="stat-info">
+                        <h3>已拒绝</h3>
+                        <div class="stat-value" th:text="${stats.rejected}">18</div>
+                    </div>
                 </div>
+            </div>
 
-                <!-- 登录按钮 -->
-                <button type="submit" class="login-btn" id="loginBtn">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>登录管理后台</span>
-                </button>
-
-                <!-- 底部链接 -->
-                <div class="login-footer">
-                    <a th:href="@{/}">返回系统首页</a>
-                    <span style="margin: 0 0.5rem;">|</span>
-                    <a href="javascript:;" id="forgotPwd">忘记密码？</a>
+            <!-- 筛选和操作栏 -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="status-filter">状态：</label>
+                        <select id="status-filter" name="status" onchange="this.form.submit()">
+                            <option value="all" th:selected="${currentStatus == 'all'}">全部状态</option>
+                            <option value="pending" th:selected="${currentStatus == 'pending'}">待审核</option>
+                            <option value="approved" th:selected="${currentStatus == 'approved'}">已批准</option>
+                            <option value="rejected" th:selected="${currentStatus == 'rejected'}">已拒绝</option>
+                            <option value="completed" th:selected="${currentStatus == 'completed'}">已完成</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="date-filter">日期范围：</label>
+                        <input type="date" id="date-filter" name="startDate">
+                        <span>至</span>
+                        <input type="date" name="endDate">
+                    </div>
+                    <div class="filter-item">
+                        <label for="relation-filter">关系：</label>
+                        <select id="relation-filter" name="relation">
+                            <option value="">全部关系</option>
+                            <option value="配偶">配偶</option>
+                            <option value="父母">父母</option>
+                            <option value="子女">子女</option>
+                            <option value="兄弟姐妹">兄弟姐妹</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
                 </div>
-            </form>
+                <div class="action-buttons">
+                    <button class="btn btn-outline" id="batch-approve">
+                        <i class="fas fa-check"></i> 批量批准
+                    </button>
+                    <button class="btn btn-outline" id="batch-reject">
+                        <i class="fas fa-times"></i> 批量拒绝
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i> 导出数据
+                    </button>
+                </div>
+            </div>
+
+            <!-- 表格容器 -->
+            <div class="table-container">
+                <form id="appointment-form">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th class="checkbox-cell">
+                                    <input type="checkbox" id="select-all">
+                                </th>
+                                <th>预约ID</th>
+                                <th>服刑人员信息</th>
+                                <th>会见人信息</th>
+                                <th>预约时间</th>
+                                <th>状态</th>
+                                <th class="action-cell">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="app : ${appointments}">
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" name="ids" th:value="${app.id}" th:if="${app.status == 'pending'}">
+                                </td>
+                                <td th:text="${app.id}">AP2024001</td>
+                                <td>
+                                    <div th:text="${'编号：' + app.prisonerId}">编号：P2023056</div>
+                                    <div th:text="${'姓名：' + app.prisonerName}">姓名：张三</div>
+                                </td>
+                                <td>
+                                    <div th:text="${'姓名：' + app.visitorName}">姓名：李四</div>
+                                    <div th:text="${'身份证：' + app.visitorId}">身份证：110101********1234</div>
+                                    <div th:text="${'关系：' + app.relation}">关系：配偶</div>
+                                    <div th:text="${'电话：' + app.phone}">电话：138****5678</div>
+                                </td>
+                                <td>
+                                    <div th:text="${'日期：' + app.appointmentDate}">日期：2024-06-15</div>
+                                    <div th:text="${'时间：' + app.appointmentTime}">时间：09:30-10:00</div>
+                                </td>
+                                <td>
+                                    <span th:class="|status-tag status-${app.status}|" 
+                                          th:text="${#strings.replace(app.status, 'pending', '待审核')}">待审核</span>
+                                    <span th:class="|status-tag status-${app.status}|" 
+                                          th:text="${#strings.replace(app.status, 'approved', '已批准')}" th:if="${app.status == 'approved'}">已批准</span>
+                                    <span th:class="|status-tag status-${app.status}|" 
+                                          th:text="${#strings.replace(app.status, 'rejected', '已拒绝')}" th:if="${app.status == 'rejected'}">已拒绝</span>
+                                    <span th:class="|status-tag status-${app.status}|" 
+                                          th:text="${#strings.replace(app.status, 'completed', '已完成')}" th:if="${app.status == 'completed'}">已完成</span>
+                                </td>
+                                <td class="action-cell">
+                                    <button type="button" class="action-btn view-btn" th:data-id="${app.id}">
+                                        <i class="fas fa-eye"></i> 查看
+                                    </button>
+                                    
+                                    <button type="submit" class="action-btn approve-btn" name="action" 
+                                            th:value="${'approve_' + app.id}" th:if="${app.status == 'pending'}">
+                                        <i class="fas fa-check"></i> 批准
+                                    </button>
+                                    
+                                    <button type="submit" class="action-btn reject-btn" name="action" 
+                                            th:value="${'reject_' + app.id}" th:if="${app.status == 'pending'}">
+                                        <i class="fas fa-times"></i> 拒绝
+                                    </button>
+                                    
+                                    <button type="submit" class="action-btn complete-btn" name="action" 
+                                            th:value="${'complete_' + app.id}" th:if="${app.status == 'approved'}">
+                                        <i class="fas fa-flag-checkered"></i> 完成
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:if="${appointments.isEmpty()}">
+                                <td colspan="7" class="empty-state">
+                                    <i class="fas fa-calendar-times"></i>
+                                    <h3>暂无符合条件的预约记录</h3>
+                                    <p>请调整筛选条件后重试</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <button class="pagination-btn"><i class="fas fa-chevron-left"></i></button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn">3</button>
+                <button class="pagination-btn">4</button>
+                <button class="pagination-btn">5</button>
+                <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
     </div>
 
     <script>
-        // 表单提交加载状态
-        const loginForm = document.getElementById('adminLoginForm');
-        const loginBtn = document.getElementById('loginBtn');
-
-        loginForm.addEventListener('submit', function() {
-            loginBtn.classList.add('loading');
-            loginBtn.innerHTML = '<i class="fas fa-spinner"></i><span>登录中...</span>';
-            loginForm.submit();
+        // 全选/取消全选功能
+        document.getElementById('select-all').addEventListener('change', function(e) {
+            const checkboxes = document.querySelectorAll('input[name="ids"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = e.target.checked;
+            });
         });
 
-        // 忘记密码弹窗（示例，实际需对接后端接口）
-        document.getElementById('forgotPwd').addEventListener('click', function() {
-            alert('请联系系统超级管理员重置密码，或发送邮件至 admin@example.com 申请重置');
+        // 批量批准
+        document.getElementById('batch-approve').addEventListener('click', function() {
+            const checkedIds = Array.from(document.querySelectorAll('input[name="ids"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            if (checkedIds.length === 0) {
+                alert('请选择需要批准的预约记录');
+                return;
+            }
+            
+            if (confirm(`确定要批量批准选中的${checkedIds.length}条记录吗？`)) {
+                // 构建表单提交
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/admin/appointments/batch-update';
+                
+                checkedIds.forEach(id => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids';
+                    input.value = id;
+                    form.appendChild(input);
+                });
+                
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = 'approved';
+                form.appendChild(statusInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
         });
 
-        // 输入框聚焦时清除错误提示
-        const formInputs = document.querySelectorAll('.form-control input');
-        formInputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                const errorMsg = this.parentElement.nextElementSibling;
-                if (errorMsg && errorMsg.classList.contains('error-msg')) {
-                    errorMsg.style.display = 'none';
-                }
+        // 批量拒绝
+        document.getElementById('batch-reject').addEventListener('click', function() {
+            const checkedIds = Array.from(document.querySelectorAll('input[name="ids"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            if (checkedIds.length === 0) {
+                alert('请选择需要拒绝的预约记录');
+                return;
+            }
+            
+            if (confirm(`确定要批量拒绝选中的${checkedIds.length}条记录吗？`)) {
+                // 构建表单提交
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/admin/appointments/batch-update';
+                
+                checkedIds.forEach(id => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids';
+                    input.value = id;
+                    form.appendChild(input);
+                });
+                
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = 'rejected';
+                form.appendChild(statusInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+
+        // 查看详情按钮事件
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const appointmentId = this.getAttribute('data-id');
+                // 跳转到详情页
+                window.location.href = `/admin/appointments/${appointmentId}/detail`;
             });
         });
     </script>
 </body>
 </html>
+    
