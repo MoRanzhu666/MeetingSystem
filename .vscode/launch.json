@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MeetingSystemApplication<mts>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.gp.mts.MeetingSystemApplication",
+            "projectName": "mts",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
