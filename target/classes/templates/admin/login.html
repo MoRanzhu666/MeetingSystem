@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>监狱会见系统 - 管理员登录</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "Arial", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        /* 登录容器 */
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        /* 登录头部 */
+        .login-header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .login-header .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header .logo i {
+            font-size: 1.8rem;
+        }
+
+        .login-header h2 {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+
+        /* 登录表单区域 */
+        .login-form-wrap {
+            padding: 2rem;
+        }
+
+        /* 表单组样式 */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #444;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            position: relative;
+        }
+
+        .form-control input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 2.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-control i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        /* 错误提示 */
+        .error-msg {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .global-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 登录按钮 */
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .login-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* 底部链接 */
+        .login-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .login-footer a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .login-footer a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        /* 加载状态 */
+        .login-btn.loading {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .login-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .login-form-wrap {
+                padding: 1.5rem;
+            }
+
+            .login-header h2 {
+                font-size: 1.25rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.2rem;
+            }
+
+            .login-btn {
+                padding: 0.9rem;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- 登录头部 -->
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h2>监狱会见系统</h2>
+            </div>
+            <p>管理员登录入口</p>
+        </div>
+
+        <!-- 登录表单 -->
+        <div class="login-form-wrap">
+            <!-- 全局错误提示（如用户名密码错误） -->
+            <div th:if="${not #strings.isEmpty(errorMsg)}" class="global-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${errorMsg}">用户名或密码错误，请重新输入</span>
+            </div>
+
+            <!-- 登录表单 -->
+            <form th:action="@{/admin/login}" method="post" th:object="${loginVO}" id="adminLoginForm">
+                <!-- 用户名输入框 -->
+                <div class="form-group">
+                    <label for="username">管理员用户名 <span style="color: #e74c3c;">*</span></label>
+                    <div class="form-control">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" th:field="*{username}" placeholder="请输入管理员用户名" required>
+                    </div>
+                    <p class="error-msg" th:if="${#fields.hasErrors('username')}">
+                        <i class="fas fa-times-circle"></i>
+                        <span th:errors="*{username}">用户名不能为空</span>
+                    </p>
+                </div>
+
+                <!-- 密码输入框 -->
+                <div class="form-group">
+                    <label for="password">管理员密码 <span style="color: #e74c3c;">*</span></label>
+                    <div class="form-control">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" th:field="*{password}" placeholder="请输入管理员密码" required>
+                    </div>
+                    <p class="error-msg" th:if="${#fields.hasErrors('password')}">
+                        <i class="fas fa-times-circle"></i>
+                        <span th:errors="*{password}">密码不能为空</span>
+                    </p>
+                </div>
+
+                <!-- 登录按钮 -->
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>登录管理后台</span>
+                </button>
+
+                <!-- 底部链接 -->
+                <div class="login-footer">
+                    <a th:href="@{/}">返回系统首页</a>
+                    <span style="margin: 0 0.5rem;">|</span>
+                    <a href="javascript:;" id="forgotPwd">忘记密码？</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 表单提交加载状态
+        const loginForm = document.getElementById('adminLoginForm');
+        const loginBtn = document.getElementById('loginBtn');
+
+        loginForm.addEventListener('submit', function() {
+            loginBtn.classList.add('loading');
+            loginBtn.innerHTML = '<i class="fas fa-spinner"></i><span>登录中...</span>';
+            loginForm.submit();
+        });
+
+        // 忘记密码弹窗（示例，实际需对接后端接口）
+        document.getElementById('forgotPwd').addEventListener('click', function() {
+            alert('请联系系统超级管理员重置密码，或发送邮件至 admin@example.com 申请重置');
+        });
+
+        // 输入框聚焦时清除错误提示
+        const formInputs = document.querySelectorAll('.form-control input');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                const errorMsg = this.parentElement.nextElementSibling;
+                if (errorMsg && errorMsg.classList.contains('error-msg')) {
+                    errorMsg.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

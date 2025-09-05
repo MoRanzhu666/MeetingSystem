@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>监狱会见系统 - 预约查询</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Microsoft YaHei", sans-serif;
+      }
+      body {
+        background-color: #f5f7fa;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      /* 头部导航 */
+      header {
+        background-color: #2c3e50;
+        color: #fff;
+        padding: 1rem 0;
+      }
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 1.5rem;
+        transition: color 0.3s;
+      }
+      nav a:hover {
+        color: #3498db;
+      }
+
+      /* 容器 */
+      .container {
+        max-width: 1000px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+      }
+      .card {
+        background: #fff;
+        padding: 2.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+      }
+      .card h2 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+      }
+
+      /* 查询表单 */
+      .query-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .form-group {
+        flex: 1 1 300px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #444;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+      .form-actions {
+        flex: 1 1 100%;
+        text-align: center;
+        padding-top: 1.5rem;
+      }
+      .query-btn {
+        padding: 0.8rem 2rem;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .query-btn:hover {
+        background-color: #2980b9;
+      }
+
+      /* 提示信息 */
+      .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+      .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+
+      /* 结果表格 */
+      .result-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1.5rem;
+      }
+      .result-table th,
+      .result-table td {
+        padding: 0.8rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+      .result-table th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 500;
+      }
+      .result-table tr:hover {
+        background-color: #f8f9fa;
+      }
+      .status-tag {
+        display: inline-block;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        color: #fff;
+      }
+      .status-pending {
+        background-color: #ffc107;
+      }
+      .status-approved {
+        background-color: #28a745;
+      }
+      .status-rejected {
+        background-color: #dc3545;
+      }
+      .status-completed {
+        background-color: #17a2b8;
+      }
+      .status-canceled {
+        background-color: #6c757d;
+      }
+
+      /* 底部 */
+      footer {
+        background-color: #2c3e50;
+        color: #fff;
+        text-align: center;
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 头部导航 -->
+    <header>
+      <div class="header-container">
+        <div class="logo">监狱会见系统</div>
+        <nav>
+          <a th:href="@{/}">首页</a>
+          <a th:href="@{/register}">预约会见</a>
+          <a th:href="@{/query}">预约查询</a>
+          <a th:href="@{/admin/login}">管理入口</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <div class="container">
+      <div class="card">
+        <h2>预约查询</h2>
+
+        <!-- 查询表单 -->
+        <form
+          th:action="@{/appointments/query}"
+          method="post"
+          class="query-form"
+          th:object="${queryVO}"
+        >
+          <div class="form-group">
+            <label for="visitorId">会见人身份证号</label>
+            <input
+              type="text"
+              id="visitorId"
+              th:field="*{visitorId}"
+              placeholder="请输入会见人身份证号"
+            />
+          </div>
+          <div class="form-group">
+            <label for="prisonerId">服刑人员编号</label>
+            <input
+              type="text"
+              id="prisonerId"
+              th:field="*{prisonerId}"
+              placeholder="请输入服刑人员编号"
+            />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="query-btn">查询</button>
+          </div>
+        </form>
+
+        <!-- 提示信息 -->
+        <div
+          th:if="${not #strings.isEmpty(message)}"
+          th:class="${isSuccess ? 'alert alert-success' : 'alert alert-danger'}"
+          th:text="${message}"
+        ></div>
+
+        <!-- 查询结果表格 -->
+        <div th:if="${appointments != null and not appointments.isEmpty()}">
+          <p class="alert alert-info">
+            共查询到 <span th:text="${appointments.size()}"></span> 条记录
+          </p>
+          <table class="result-table">
+            <thead>
+              <tr>
+                <th>预约ID</th>
+                <th>服刑人员信息</th>
+                <th>会见人信息</th>
+                <th>预约时间</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="app : ${appointments}">
+                <td th:text="${app.id}"></td>
+                <td>
+                  <div th:text="${app.prisonerId}"></div>
+                  <div th:text="${app.prisonerName}"></div>
+                </td>
+                <td>
+                  <div th:text="${app.visitorName}"></div>
+                  <div th:text="${app.relation}"></div>
+                </td>
+                <td>
+                  <div th:text="${app.appointmentDate}"></div>
+                  <div th:text="${app.appointmentTime}"></div>
+                </td>
+                <td>
+                  <span
+                    th:class="|status-tag status-${app.status}|"
+                    th:text="${#strings.replace(app.status, 'pending', '待审核')}"
+                  ></span>
+                  <span
+                    th:class="|status-tag status-${app.status}|"
+                    th:text="${#strings.replace(app.status, 'approved', '已批准')}"
+                    th:if="${app.status == 'approved'}"
+                  ></span>
+                  <span
+                    th:class="|status-tag status-${app.status}|"
+                    th:text="${#strings.replace(app.status, 'rejected', '已拒绝')}"
+                    th:if="${app.status == 'rejected'}"
+                  ></span>
+                  <span
+                    th:class="|status-tag status-${app.status}|"
+                    th:text="${#strings.replace(app.status, 'completed', '已完成')}"
+                    th:if="${app.status == 'completed'}"
+                  ></span>
+                  <span
+                    th:class="|status-tag status-${app.status}|"
+                    th:text="${#strings.replace(app.status, 'canceled', '已取消')}"
+                    th:if="${app.status == 'canceled'}"
+                  ></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部 -->
+    <footer>
+      <p>© 2024 监狱会见系统 版权所有 | 技术支持：XX信息技术有限公司</p>
+    </footer>
+  </body>
+</html>

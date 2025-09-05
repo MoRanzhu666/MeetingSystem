@@ -23,6 +23,13 @@ public class AdminController {
     private final AdminService adminService;
     private final AppointmentService appointmentService;
 
+    @GetMapping("/login")
+    public String adminLoginPage(Model model) {
+        model.addAttribute("loginVO", new AdminLoginVO());
+
+        return "admin/login";
+    }
+
     /**
      * 处理管理员登录
      */
@@ -44,11 +51,6 @@ public class AdminController {
             model.addAttribute("errorMsg", "用户名或密码错误");
             return "admin/login";
         }
-    }
-
-    @GetMapping("/login")
-    public String adminLoginPage() {
-        return "admin/login";
     }
 
     /**
@@ -81,8 +83,6 @@ public class AdminController {
         session.invalidate(); // 清除会话
         return "redirect:/admin/login";
     }
-
-
 
     /**
      * 更新预约状态（审核操作）
