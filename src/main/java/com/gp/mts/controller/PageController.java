@@ -22,5 +22,4 @@ public class PageController {
         return "query";
     }
 
-    // 删除 admin 相关的路由
 }
