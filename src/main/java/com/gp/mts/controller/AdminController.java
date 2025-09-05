@@ -1,8 +1,11 @@
 package com.gp.mts.controller;
 
-import com.gp.mts.bean.Appointment;
+import com.gp.mts.bean.Enum.PageEnum;
+import com.gp.mts.bean.po.Appointment;
 import com.gp.mts.service.AdminService;
 import com.gp.mts.service.AppointmentService;
+import com.gp.mts.utils.GenerateModelVOUtils;
+import com.gp.mts.utils.PageUtils;
 import com.gp.mts.vo.AdminLoginVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +28,7 @@ public class AdminController {
 
     @GetMapping("/login")
     public String adminLoginPage(Model model) {
-        model.addAttribute("loginVO", new AdminLoginVO());
-
-        return "admin/login";
+        return PageUtils.toAdminLogin(model);
     }
 
     /**
@@ -45,11 +46,11 @@ public class AdminController {
         if (loginSuccess) {
             // 登录成功，保存会话并跳转到后台首页
             session.setAttribute("admin", loginVO.getUsername());
-            return "redirect:/admin/dashboard";
+            return PageUtils.RedirectAdminDashBoard();
         } else {
             // 登录失败，返回登录页
-            model.addAttribute("errorMsg", "用户名或密码错误");
-            return "admin/login";
+            GenerateModelVOUtils.generateErrorMsg(model, "用户名或密码错误");
+            return PageUtils.toAdminLogin(model);
         }
     }
 
@@ -64,7 +65,7 @@ public class AdminController {
 
         // 验证登录状态
         if (session.getAttribute("admin") == null) {
-            return "redirect:/admin/login";
+            return PageUtils.RedirectAdminLogin();
         }
 
         // 业务逻辑
@@ -72,7 +73,8 @@ public class AdminController {
         model.addAttribute("appointments", appointments);
         model.addAttribute("currentStatus", status);
 
-        return "admin/dashboard";
+//        return "admin/dashboard";
+        return PageUtils.toAdminDashboard(model);
     }
 
     /**
@@ -81,7 +83,8 @@ public class AdminController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate(); // 清除会话
-        return "redirect:/admin/login";
+//        return "redirect:/admin/login";
+        return PageUtils.RedirectAdminLogin();
     }
 
     /**
@@ -95,13 +98,13 @@ public class AdminController {
 
         // 验证登录状态
         if (session.getAttribute("admin") == null) {
-            return "redirect:/admin/login";
+            return PageUtils.RedirectAdminLogin();
         }
 
         // 执行状态更新
         appointmentService.updateStatus(id, status);
 
         // 重定向回列表页（避免表单重复提交）
-        return "redirect:/admin/dashboard";
+        return PageUtils.RedirectAdminDashBoard();
     }
 }

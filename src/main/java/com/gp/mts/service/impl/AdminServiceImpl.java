@@ -1,6 +1,6 @@
 package com.gp.mts.service.impl;
 
-import com.gp.mts.bean.Admin;
+import com.gp.mts.bean.po.Admin;
 import com.gp.mts.mapper.AdminMapper;
 import com.gp.mts.service.AdminService;
 import lombok.RequiredArgsConstructor;

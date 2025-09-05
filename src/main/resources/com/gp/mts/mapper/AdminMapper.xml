@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gp.mts.mapper.AdminMapper">
-    <select id="selectByUsername" resultType="com.gp.mts.bean.Admin">
+    <select id="selectByUsername" resultType="com.gp.mts.bean.po.Admin">
         SELECT id, username, password, create_time, update_time
         FROM admins
         WHERE username = #{username}

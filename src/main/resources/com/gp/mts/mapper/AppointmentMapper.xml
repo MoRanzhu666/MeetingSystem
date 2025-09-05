@@ -25,7 +25,7 @@
     </insert>
 
     <!-- 多条件查询 -->
-    <select id="selectByVisitorIdAndPrisonerId" resultType="com.gp.mts.bean.Appointment">
+    <select id="selectByVisitorIdAndPrisonerId" resultType="com.gp.mts.bean.po.Appointment">
         SELECT * FROM appointments
         WHERE visitor_id = #{visitorId}
           AND prisoner_id = #{prisonerId}
@@ -33,34 +33,34 @@
     </select>
 
     <!-- 按会见人ID查询 -->
-    <select id="selectByVisitorId" resultType="com.gp.mts.bean.Appointment">
+    <select id="selectByVisitorId" resultType="com.gp.mts.bean.po.Appointment">
         SELECT * FROM appointments
         WHERE visitor_id = #{visitorId}
         ORDER BY appointment_date DESC
     </select>
 
     <!-- 按服刑人员ID查询 -->
-    <select id="selectByPrisonerId" resultType="com.gp.mts.bean.Appointment">
+    <select id="selectByPrisonerId" resultType="com.gp.mts.bean.po.Appointment">
         SELECT * FROM appointments
         WHERE prisoner_id = #{prisonerId}
         ORDER BY appointment_date DESC
     </select>
 
     <!-- 查询所有 -->
-    <select id="selectAllOrderByDateDesc" resultType="com.gp.mts.bean.Appointment">
+    <select id="selectAllOrderByDateDesc" resultType="com.gp.mts.bean.po.Appointment">
         SELECT * FROM appointments
         ORDER BY appointment_date DESC
     </select>
 
     <!-- 按状态查询 -->
-    <select id="selectByStatusOrderByDateDesc" resultType="com.gp.mts.bean.Appointment">
+    <select id="selectByStatusOrderByDateDesc" resultType="com.gp.mts.bean.po.Appointment">
         SELECT * FROM appointments
         WHERE status = #{status}
         ORDER BY appointment_date DESC
     </select>
 
     <!-- 按ID查询 -->
-    <select id="selectById" resultType="com.gp.mts.bean.Appointment">
+    <select id="selectById" resultType="com.gp.mts.bean.po.Appointment">
         SELECT * FROM appointments WHERE id = #{id}
     </select>
 

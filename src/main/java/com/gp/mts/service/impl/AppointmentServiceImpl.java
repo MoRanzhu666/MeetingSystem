@@ -1,13 +1,17 @@
 package com.gp.mts.service.impl;
 
-import com.gp.mts.bean.Appointment;
+import com.gp.mts.bean.Enum.MessageEnum;
+import com.gp.mts.bean.po.Appointment;
 import com.gp.mts.mapper.AppointmentMapper;
 import com.gp.mts.service.AppointmentService;
+import com.gp.mts.utils.GenerateModelVOUtils;
+import com.gp.mts.utils.PageUtils;
 import com.gp.mts.vo.AppointmentQueryVO;
 import com.gp.mts.vo.AppointmentRegisterVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -163,5 +167,22 @@ public class AppointmentServiceImpl implements AppointmentService {
                 || "rejected".equals(status)
                 || "completed".equals(status)
                 || "canceled".equals(status);
+    }
+
+    public String handleOperationResult(Model model, PageService pageService, Map<String, Object> result) {
+        // 处理业务结果
+        if ((boolean) result.get("success")) {
+            // 预约成功，携带结果跳转到成功页
+            GenerateModelVOUtils.generateSuccessMsg(model, pageService);
+            GenerateModelVOUtils.generateGlobalMsg(model, result.get("message").toString());
+            model.addAttribute("appointmentId", result.get("appointmentId"));
+
+            return PageUtils.toRegisterPage(model, pageService); // 预约成功页
+        } else {
+            // 预约失败，返回原页面显示错误
+            GenerateModelVOUtils.generateAppointmentRegisterVO(model);
+            GenerateModelVOUtils.generateErrorMsg(model, result.get("message"));
+            return PageUtils.toRegisterPage(model, pageService);
+        }
     }
 }

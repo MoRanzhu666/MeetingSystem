@@ -1,6 +1,6 @@
 package com.gp.mts.mapper;
 
-import com.gp.mts.bean.Appointment;
+import com.gp.mts.bean.po.Appointment;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.time.LocalDate;

@@ -1,6 +1,6 @@
 package com.gp.mts.mapper;
 
-import com.gp.mts.bean.Admin;
+import com.gp.mts.bean.po.Admin;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

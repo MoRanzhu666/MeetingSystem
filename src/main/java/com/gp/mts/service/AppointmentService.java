@@ -1,6 +1,6 @@
 package com.gp.mts.service;
 
-import com.gp.mts.bean.Appointment;
+import com.gp.mts.bean.po.Appointment;
 import com.gp.mts.vo.AppointmentQueryVO;
 import com.gp.mts.vo.AppointmentRegisterVO;
 import java.util.List;

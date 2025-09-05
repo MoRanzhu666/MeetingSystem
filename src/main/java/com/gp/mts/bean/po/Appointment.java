@@ -1,4 +1,4 @@
-package com.gp.mts.bean;
+package com.gp.mts.bean.po;
 
 import jakarta.persistence.*;
 import lombok.Data;

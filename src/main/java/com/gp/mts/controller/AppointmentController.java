@@ -1,24 +1,22 @@
 package com.gp.mts.controller;
 
-import com.gp.mts.bean.Appointment;
-import com.gp.mts.service.AppointmentService;
-import com.gp.mts.service.impl.AdminServiceImpl;
 import com.gp.mts.service.impl.AppointmentServiceImpl;
+import com.gp.mts.service.impl.PageService;
 import com.gp.mts.utils.GenerateModelVOUtils;
+import com.gp.mts.utils.PageUtils;
 import com.gp.mts.vo.AppointmentQueryVO;
 import com.gp.mts.vo.AppointmentRegisterVO;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,45 +28,34 @@ public class AppointmentController {
 
     @Autowired
     private AppointmentServiceImpl appointmentServiceImpl;
+    @Autowired
+    private PageService pageService;
 
     /**
      * 处理预约登记表单提交
      */
     @PostMapping("/register")
+    @Transactional(rollbackFor = Exception.class)
     public String handleRegister(
             // @Valid @RequestBody(required = false) AppointmentRegisterVO registerVO,
-            AppointmentRegisterVO registerVO,
+            @Valid AppointmentRegisterVO registerVO,
             BindingResult bindingResult,
             Model model) {
-
-        System.out.println("register"+bindingResult.hasErrors());
-        // 表单验证失败，返回原页面并显示错误
         if (bindingResult.hasErrors()) {
-            model.addAttribute("errorMsg", "表单填写有误，请检查后重试");
-            return "register"; // 回到预约登记页
+            GenerateModelVOUtils.generateErrorMsg(model, "表单填写有误，请检查后重试");
+            GenerateModelVOUtils.generateGlobalMsg(model, "表单填写有误，请检查后重试");
+            return PageUtils.toRegisterPage(model, pageService); // 回到预约登记页
         }
-
-        // 调用服务层处理业务
         Map<String, Object> result = appointmentServiceImpl.register(registerVO);
 
-        // 处理业务结果
-        if ((boolean) result.get("success")) {
-            // 预约成功，携带结果跳转到成功页
-            model.addAttribute("message", result.get("message"));
-            model.addAttribute("appointmentId", result.get("appointmentId"));
-            return "query"; // 预约成功页
-        } else {
-            // 预约失败，返回原页面显示错误
-            GenerateModelVOUtils.generateAppointmentRegisterVO(model);
-            GenerateModelVOUtils.generateErrorMsg(model, result.get("message"));
-            return "register";
-        }
+        return appointmentServiceImpl.handleOperationResult(model, pageService,  result);
     }
 
     /**
      * 处理预约查询表单提交
      */
     @PostMapping("/query")
+    @Transactional(rollbackFor = Exception.class)
     public String handleQuery(
             // @RequestBody(required = false) AppointmentQueryVO queryVO,
             AppointmentQueryVO queryVO,
@@ -77,7 +64,7 @@ public class AppointmentController {
         Map<String, Object> result = appointmentServiceImpl.query(queryVO);
         System.out.println("result"+result);
         // 绑定查询条件回显（方便用户修改）
-        model.addAttribute("queryVO", queryVO);
+//        model.addAttribute("queryVO", queryVO);
 
         // 处理查询结果
         if ((boolean) result.get("success")) {
@@ -88,6 +75,7 @@ public class AppointmentController {
             model.addAttribute("errorMsg", result.get("message"));
         }
 
-        return "query"; // 回到查询页展示结果
+//        return "query"; // 回到查询页展示结果
+        return PageUtils.toQueryPage(model, queryVO);
     }
 }
