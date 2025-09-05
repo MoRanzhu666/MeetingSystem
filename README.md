@@ -4,9 +4,11 @@
 
 ##### 1.安装jdk17
 
+[Java Archive Downloads - Java SE 17.0.12 and earlier](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+
 ##### 2.安装mysql
 
-以上两步可点击项目根目录的installer.bat文件进行安装
+[MySQL :: Download MySQL Installer](https://dev.mysql.com/downloads/windows/installer/8.0.html)
 
 ##### 3.安装vscode
 
